@@ -85,10 +85,10 @@ a {
   line-height: 1.5rem;
   text-align:center;
   font-family: 'helvetica', 'arial', 'sans';
-  padding:10px;
-  margin: 20px;
-  width: 250px;
-  height: 300px;
+  padding:0.7px;
+  margin: 1px;
+  width: 13rem;
+  height: 16rem;
   overflow: hidden;
   background-color: #191919;
   border-radius: 20px;
