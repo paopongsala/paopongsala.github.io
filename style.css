@@ -49,7 +49,6 @@ a {
 .assignments {
     display: flex;
     flex-direction: row;
-    flex-basis: 33.333333%;
     align-content: center;
     justify-content: center;
     flex-wrap: wrap;
