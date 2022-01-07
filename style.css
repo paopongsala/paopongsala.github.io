@@ -55,8 +55,8 @@ a {
 }
 
 .assignment {
-  font-size: 12px;
-  line-height: 24px;
+  font-size: 0.9rem;
+  line-height: 1.5rem;
   text-align:center;
   font-family: 'helvetica', 'arial', 'sans';
   padding:10px;
@@ -83,6 +83,7 @@ a {
 
 #a-title {
     color: #fff;
+    font-family: Garamond,serif;
     background: linear-gradient(271deg,#a0e9ff 30%,#a162e8 50%,#f093b0 70%,#edca85 94%);;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
