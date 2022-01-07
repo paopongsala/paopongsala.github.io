@@ -6,7 +6,7 @@ html, body {
 }
 
 h1 {
-    font-size:2rem !important;
+    font-size:1.5rem !important;
 }
 
 h2,h3,h4 {
@@ -30,7 +30,7 @@ a {
   flex-direction: column;
   height: auto;
   padding: 30px 30px 30px;
-  margin:40px;
+  margin: 1.2rem;
   text-align:center;
   color:#fff;
   letter-spacing: 0.25px;
@@ -45,7 +45,6 @@ a {
 }
 
 #desc{
-    width: 80%;
     font-size: 1.3rem;
 }
 
