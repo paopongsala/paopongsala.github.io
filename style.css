@@ -1,13 +1,12 @@
 html, body {
   padding: 0 0 0 0;
-  margin: 1.2rem;
   font-family: 'helvetica', 'arial', 'sans';
   background-color: #111;
   letter-spacing: 0.25px;
 }
 
 h1 {
-    font-size:2rem;
+    font-size:2rem !important;
 }
 
 h2,h3,h4 {
@@ -46,12 +45,13 @@ a {
 }
 
 #desc{
-    width: 70%;
+    width: 80%;
     font-size: 1.3rem;
 }
 
 .assignments {
     display: flex;
+    margin: 1.2rem;
     flex-direction: row;
     align-content: center;
     justify-content: center;
