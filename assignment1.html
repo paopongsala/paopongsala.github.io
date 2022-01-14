@@ -1,0 +1,49 @@
+<!DOCTYPE html> 
+<html> 
+
+    <head> 
+        <meta charset="utf-8"> 
+        <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
+
+        <title>A1: Blink!</title>
+        <link rel='shortcut icon' type='image/x-icon' href="/favicon.ico"/>
+
+ 
+
+        <link href="style.css" media="screen" rel="stylesheet" type="text/css" />
+
+    </head> 
+ 
+
+    <body> 
+	<a id="back" href="index.html">← Back</a>
+        <div class="header">
+                <h1 id="header">A1: Blink!</h1>
+        </div>
+
+	<p>
+		Identifying Values of Resistors </br>
+		For Green, Red,and Yellow LEDs — knowing that they have a 1.8 voltage drop and that the USB provides 5V, I calculated the 	
+		voltage as follows: </br>
+		V = 5V - 1.8V = 3.2V </br>
+		Using Ohm's Law, I then calculated the value of the resistors to achieve the desired current of 0.02A: </br>
+		voltage = current * resistance </br>
+		3.2V    = 0.02A   * resistance </br>
+		resistance = 3.2V / 0.02A = 160 Ω </br>
+		Because the class kit provided does not include 160 Ω resistors, I opted for a higher value of 220 Ω which resulted in 3.2V/220Ω = ~0.0145 A of current which is lower than the desired current but would prevent the LEDs from breaking. </br>
+
+		Using similar calculation for the Blue and White LEDs that have a 3.3 voltage drop, the voltage is </br>
+		V = 5V - 3.3V = 1.7 V </br>
+		Using Ohm's Law, </br>
+		voltage = current * resistance </br>
+		1.7V    = 0.02A   * resistance </br>
+		resistance = 1.7V / 0.02A = 85 Ω </br>
+		Again, because the kit does not include 85 Ω resistors, I used 100 Ω resistors which resulted in a slightly lesser desired current of 1.7V/100Ω = 0.017 A.
+
+	</p>
+
+
+
+    </body>
+
+</html>

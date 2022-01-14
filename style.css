@@ -25,6 +25,7 @@ html, body {
   padding: 0 0 0 0;
   font-family: 'helvetica', 'arial', 'sans';
   background-color: #111;
+  margin: 1rem;
   letter-spacing: 0.25px;
 }
 
@@ -136,6 +137,11 @@ a {
 @keyframes blink-caret {
   from, to { border-color: transparent }
   50% { border-color: white; }
+}
+
+#back {
+    position: absolute;
+    color: #ffffff;
 }
 
 
