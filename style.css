@@ -179,5 +179,15 @@ pre code {
   Display:flex;
   flex-direction: column;
 
+}
 
+Ul{
+  Color:#ffffff;
+}
+
+#formula {
+  text-align:center;
+  font-weight:bold;
+  font-size:1rem;
+  margin-top:0px;
 }

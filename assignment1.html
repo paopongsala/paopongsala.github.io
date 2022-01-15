@@ -27,14 +27,23 @@
 		<div class="side-by-side">
 			<div id="texts">
 			<h3 id="subheader">SCHEMATIC</h3>
-			<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with.</p> </div>
+			<p>This schematic shows 5 different colored LEDS lined up in a parallel circuit. The Arduino is powered by a 5V USB cord where 5 different pins are used to individually connect to each LED. Depending on the color of the LED, resistors with specific values were calculated and selected (see "Calculating Resistors" below) to avoid damaging components on the circuit. All the resistors were then connected to ground.</p> </div>
 			<img src="A1_schematic.png" style="max-width:50%;height:auto;margin-left:1rem;">
 		</div>
 		</br>
 		<div class="side-by-side">
 			<div id="texts">
 			<h3 id="subheader">CIRCUIT</h3>
-			<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with.</p> </div>
+			<p>Following the schematic outlined above, I built the circuit using the following components: 
+<ul>
+  <li><p>1 Arduino Uno R3</p></li>
+  <li><p>1 breadboard</p></li>	
+  <li><p>1 USB cable and power source (laptop)</p></li>
+  <li><p>6 wires (1 for ground; 5 for the LEDs) </p></li>
+  <li><p>5 LEDs (1 each of green, red, blue, yellow, and white)</p></li>
+  <li><p>5 resistors (3 of 220Ω; 2 of 100Ω)</p></li>
+</ul>
+</p> </div>
 			<img src="A1_circuit.png" style="max-width:50%;height:auto;margin-left:1rem;">
 		</div>
 
@@ -42,24 +51,24 @@
 
  
 
-	<div id="texts">
+	<div id="texts" style="width:80%;">
 		<h3 id="subheader">CALCULATING RESISTORS</h3> </br>
-		<p>For Green, Red, and Yellow LEDs — knowing that they have a 1.8 voltage drop and that the USB provides 5V, I calculated the 	
-		voltage as follows: </br>
-		V = 5V - 1.8V = 3.2V </br>
-		Using Ohm's Law, I then calculated the value of the resistors to achieve the desired current of 0.02A: </br>
-		voltage = current * resistance </br>
-		3.2V    = 0.02A   * resistance </br>
-		resistance = 3.2V / 0.02A = 160 Ω </br>
-		Because the class kit provided does not include 160 Ω resistors, I opted for a higher value of 220 Ω which resulted in 3.2V/220Ω = ~0.0145 A of current which is lower than the desired current but would prevent the LEDs from breaking. </br>
+		<p>For <span style="color: green;font-weight:bold;">Green</span>, <span style="color: red;font-weight:bold;">Red</span>, and <span style="color: yellow;font-weight:bold;">Yellow</span> LEDs — knowing that they have a 1.8 voltage drop and that the USB provides 5V, I calculated the 	
+		voltage as follows: </p>
+		<p id="formula">V = 5V - 1.8V = 3.2V</p>
+		<p>Using Ohm's Law, I then calculated the value of the resistors to achieve the desired current of 0.02A: </p>
+		<p id="formula">voltage = current * resistance</p> 
+		<p id="formula">3.2V    = 0.02A   * resistance </p> 
+		<p id="formula">resistance = 3.2V / 0.02A = <span style="color: #8a8a8a;">160 Ω</span> </p>
+		<p>Because the class kit provided does not include 160 Ω resistors, I <span style="color: #8a8a8a;font-weight:bold;">opted for a higher value of 220 Ω</span> which resulted in a lesser current but would prevent the LEDs from breaking. </p></br></br>
 
-		Using similar calculation for the Blue and White LEDs that have a 3.3 voltage drop, the voltage is </br>
-		V = 5V - 3.3V = 1.7 V </br>
-		Using Ohm's Law, </br>
-		voltage = current * resistance </br>
-		1.7V    = 0.02A   * resistance </br>
-		resistance = 1.7V / 0.02A = 85 Ω </br>
-		Again, because the kit does not include 85 Ω resistors, I used 100 Ω resistors which resulted in a slightly lesser desired current of 1.7V/100Ω = 0.017 A.
+		<p>Using similar calculation for the <span style="color: #4287f5;font-weight:bold;">Blue</span> and <span style="font-weight:bold;">White</span> LEDs that have a 3.3 voltage drop, the voltage is </p>
+		<p id="formula">V = 5V - 3.3V = 1.7 V </p>
+		<p>Using Ohm's Law, </p>
+		<p id="formula">voltage = current * resistance </p>
+		<p id="formula">1.7V    = 0.02A   * resistance </p>
+		<p id="formula">resistance = 1.7V / 0.02A = <span style="color: #8a8a8a;">85 Ω</span> </p>
+		<p>Again, because the kit does not include 85 Ω resistors, I <span style="color: #8a8a8a;font-weight:bold;">used 100 Ω resistors</span> which resulted in a slightly lesser current than the desired value.</p>
 
 	</p>
 	</div>
