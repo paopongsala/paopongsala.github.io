@@ -146,13 +146,15 @@ a {
 
 pre code {
   font-family: 'Courier New', 'helvetica', 'sans';
-  font-size: 0.8rem !important;
+  overflow-wrap: normal;
+  font-size: 0.7rem !important;
   background-color: #191919;
   border: 1px solid #000000;
   Color: #ffffff;
   display: block;
   padding: 20px;
-  Width:80%;
+  Width:90%;
+  White-space:pre-wrap !important;
 }
 
 #code-comment {
