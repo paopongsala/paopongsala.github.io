@@ -19,8 +19,11 @@
 	<a id="back" href="index.html">← Back</a>
         <div class="header">
                 <h1 id="header">A1: Blink!</h1>
-		<p style="margin-top:0px;">5 LEDS blinking in consecutive pairs in a line</p>
+		<p style="margin-top:0px;">5 LEDS blinking in consecutive pairs</p>
+		<img src="A1.gif" width=70%></a>
+
         </div>
+	</br>
 
 
 
@@ -53,7 +56,7 @@
 	<div id="texts" style="width:80%;">
 		<h3 id="subheader">CALCULATING RESISTORS</h3> </br>
 		<p>For <span style="color: green;font-weight:bold;">Green</span>, <span style="color: red;font-weight:bold;">Red</span>, and <span style="color: yellow;font-weight:bold;">Yellow</span> LEDs — knowing that they have a 1.8 voltage drop and that the USB provides 5V, I calculated the 	
-		voltage as follows: </p>
+		voltage across the resistor as follows: </p>
 		<p id="formula">V = 5V - 1.8V = 3.2V</p>
 		<p>Using Ohm's Law, I then calculated the value of the resistors to achieve the desired current of 0.02A: </p>
 		<p id="formula">voltage = current * resistance</p> 
@@ -61,7 +64,7 @@
 		<p id="formula">resistance = 3.2V / 0.02A = <span style="color: #8a8a8a;">160 Ω</span> </p>
 		<p>Because the class kit provided does not include 160 Ω resistors, I <span style="color: #8a8a8a;font-weight:bold;">opted for a higher value of 220 Ω</span> which resulted in a lesser current but would prevent the LEDs from breaking. </p></br></br>
 
-		<p>Using similar calculation for the <span style="color: #4287f5;font-weight:bold;">Blue</span> and <span style="font-weight:bold;">White</span> LEDs that have a 3.3 voltage drop, the voltage is </p>
+		<p>Using similar calculation for the <span style="color: #4287f5;font-weight:bold;">Blue</span> and <span style="font-weight:bold;">White</span> LEDs that have a 3.3 voltage drop, the voltage across the resistor would be </p>
 		<p id="formula">V = 5V - 3.3V = 1.7 V </p>
 		<p>Using Ohm's Law, </p>
 		<p id="formula">voltage = current * resistance </p>
@@ -92,8 +95,6 @@ consecutive pairs from one end of the line to another*/ </div>
 </pre>
 </div>
 
-<h3 id="subheader">CIRCUIT OPERATION</h3> </br>
-<img src="A1.gif" width=80%></a>
 
 
     </body>
