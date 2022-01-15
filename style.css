@@ -162,9 +162,10 @@ pre code {
 }
 
 .side-by-side{
-  Display:flex;
-  flex-direction: row;
-  flex-wrap: wrap;
+    Display: flex;
+    flex-direction: row;
+    max-width: 100%;
+    flex-wrap: wrap;
 }
 
 #subheader {
@@ -179,6 +180,7 @@ pre code {
 #texts {
   Display:flex;
   flex-direction: column;
+  Width:45%;
 
 }
 
