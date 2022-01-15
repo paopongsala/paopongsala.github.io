@@ -19,19 +19,32 @@
 	<a id="back" href="index.html">← Back</a>
         <div class="header">
                 <h1 id="header">A1: Blink!</h1>
+		<p style="margin-top:0px;">5 LEDS blinking in consecutive pairs in a line</p>
         </div>
 
-	<div class="side-by-side"> 
-			<img src="A1_schematic.png" style="max-width:50%;height:auto; padding-right:1rem;">
 
-       			<img src="A1_circuit.png" style="max-width:50%;height:auto;">
-	</div>
+
+		<div class="side-by-side">
+			<div id="texts">
+			<h3 id="subheader">SCHEMATIC</h3>
+			<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with.</p> </div>
+			<img src="A1_schematic.png" style="max-width:50%;height:auto;margin-left:1rem;">
+		</div>
+		</br>
+		<div class="side-by-side">
+			<div id="texts">
+			<h3 id="subheader">CIRCUIT</h3>
+			<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with.</p> </div>
+			<img src="A1_circuit.png" style="max-width:50%;height:auto;margin-left:1rem;">
+		</div>
+
+       
+
  
 
-	<div>
-	<p>
-		Identifying Values of Resistors </br>
-		For Green, Red, and Yellow LEDs — knowing that they have a 1.8 voltage drop and that the USB provides 5V, I calculated the 	
+	<div id="texts">
+		<h3 id="subheader">CALCULATING RESISTORS</h3> </br>
+		<p>For Green, Red, and Yellow LEDs — knowing that they have a 1.8 voltage drop and that the USB provides 5V, I calculated the 	
 		voltage as follows: </br>
 		V = 5V - 1.8V = 3.2V </br>
 		Using Ohm's Law, I then calculated the value of the resistors to achieve the desired current of 0.02A: </br>
@@ -52,6 +65,7 @@
 	</div>
 
 <div>
+<h3 id="subheader">CODE SNIPPET</h3>
 <pre>
   <code> <div id="code-comment">/*this firmware makes 5 LEDs (lined up in a straight line) turn on and off in 
 consecutive pairs from one end of the line to another*/ </div>
@@ -70,6 +84,7 @@ consecutive pairs from one end of the line to another*/ </div>
 </pre>
 </div>
 
+<h3 id="subheader">CIRCUIT OPERATION</h3> </br>
 <img src="A1.gif" width=80%></a>
 
 

@@ -166,3 +166,18 @@ pre code {
   flex-direction: row;
 }
 
+#subheader {
+  font-family: Garamond,serif;
+  Padding:1rem;
+  Color:#ffffff;
+  Width:45%;
+  Border-bottom: 1px solid #898888;
+}
+
+
+#texts {
+  Display:flex;
+  flex-direction: column;
+
+
+}
