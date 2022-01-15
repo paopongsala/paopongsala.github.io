@@ -21,9 +21,17 @@
                 <h1 id="header">A1: Blink!</h1>
         </div>
 
+	<div class="side-by-side"> 
+			<img src="A1_schematic.png" style="max-width:50%;height:auto; padding-right:1rem;">
+
+       			<img src="A1_circuit.png" style="max-width:50%;height:auto;">
+	</div>
+ 
+
+	<div>
 	<p>
 		Identifying Values of Resistors </br>
-		For Green, Red,and Yellow LEDs — knowing that they have a 1.8 voltage drop and that the USB provides 5V, I calculated the 	
+		For Green, Red, and Yellow LEDs — knowing that they have a 1.8 voltage drop and that the USB provides 5V, I calculated the 	
 		voltage as follows: </br>
 		V = 5V - 1.8V = 3.2V </br>
 		Using Ohm's Law, I then calculated the value of the resistors to achieve the desired current of 0.02A: </br>
@@ -41,7 +49,28 @@
 		Again, because the kit does not include 85 Ω resistors, I used 100 Ω resistors which resulted in a slightly lesser desired current of 1.7V/100Ω = 0.017 A.
 
 	</p>
+	</div>
 
+<div>
+<pre>
+  <code> <div id="code-comment">/*this firmware makes 5 LEDs (lined up in a straight line) turn on and off in 
+consecutive pairs from one end of the line to another*/ </div>
+<div id="code-comment">// adjustable timer for .2 second (used for delays)</div>int timer = 200;            
+
+<div id="code-comment">/* initialize each digital pin that corresponds to each LED light
+(12 = white, 10 = yellow, 8 = blue, 6 = red, 4 = green) */</div>void setup() { <div id="code-comment">  // use a for loop to select pins 4,6,8,10,12</div>  for (int thisPin = 4; thisPin <= 12; thisPin += 2) { <div id="code-comment">    //set pins as outputs</div>    pinMode(thisPin, OUTPUT);
+  }
+}
+
+<div id="code-comment">//infinite loop that makes the 5 LEDs blink in a pattern forever</div>void loop() { <div id="code-comment">  /* use a for loop to initialize the first LED in the pair to light up
+  starting with pins 12, 10, 8, 6 respectively */</div>  for (int firstPin = 12; firstPin >= 6; firstPin -= 2) { <div id="code-comment">    /* initialize the second LED in the pair to light up
+    whose pin #is 2 less than that of the first */</div>    int secondPin = firstPin - 2; <div id="code-comment">    //turn on the first LED in the pair</div>    digitalWrite(firstPin, HIGH); <div id="code-comment">    //wait for "timer"</div>    delay(timer); <div id="code-comment">    //turn on the second LED in the pair</div>    digitalWrite(secondPin, HIGH); <div id="code-comment">    //wait for "timer"</div>    delay(timer); <div id="code-comment">    //turn off the first LED</div>    digitalWrite(firstPin, LOW); <div id="code-comment">    //turn off the second LED</div>    digitalWrite(secondPin, LOW); <div id="code-comment">    //wait for "timer"</div>    delay(timer);          
+  }
+} </code>
+</pre>
+</div>
+
+<img src="A1.gif" width=80%></a>
 
 
     </body>

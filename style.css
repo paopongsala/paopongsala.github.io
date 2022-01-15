@@ -144,5 +144,23 @@ a {
     color: #ffffff;
 }
 
+pre code {
+  font-family: 'Courier New', 'helvetica', 'sans';
+  font-size: 0.8rem !important;
+  background-color: #191919;
+  border: 1px solid #000000;
+  Color: #ffffff;
+  display: block;
+  padding: 20px;
+  Width:80%;
+}
 
+#code-comment {
+  Color:#898888;
+}
+
+.side-by-side{
+  Display:flex;
+  flex-direction: row;
+}
 
