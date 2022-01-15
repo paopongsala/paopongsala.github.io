@@ -164,6 +164,7 @@ pre code {
 .side-by-side{
   Display:flex;
   flex-direction: row;
+  flex-wrap: wrap;
 }
 
 #subheader {
