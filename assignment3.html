@@ -85,98 +85,96 @@
 <div>
 <h3 id="subheader">CODE SNIPPET</h3>
 <pre>
-<code> <span id="code-comment">/*
-This program makes 3 LED lights fade in and out indefinitely.
-The lights turn on when pressing and immediately releasing the button.
-To turn the lights off, press and release the button again.
-
-Some fading snippets of code borrowed from Arduino IDE "Fade" example. 
-*/ </span>
+<code> <span id="code-comment">/* This program measures light detected by a photoresistor and indicates 
+each light level by turning on/off specific LEDs with special messages*/</span>
 
 
-<span id="code-comment">// red LED pin # in multi-colored LED</span>
-const int R = 5;
-<span id="code-comment">// green LED pin # in multi-colored LED</span>
-const int G = 6;
-<span id="code-comment">// blue LED pin # in multi-colored LED</span>
-const int B = 9;
-<span id="code-comment">// first blue LED pin #</span>
-const int ledPin1 =  3;
-<span id="code-comment">// second blue LED pin #</span>
-const int ledPin2 =  10; 
-<span id="code-comment">// pushbutton pin #</span>
-const int buttonPin = 12;  
+<span id="code-comment">// Blue LED pin #</span>
+const int B =  3;
+<span id="code-comment">// Green LED pin #</span>
+const int G =  5; 
+<span id="code-comment">// White LED pin #</span>
+const int W =  6;
+<span id="code-comment">// set sensor value to 0</span>
+int sensorValue = 0;
+<span id="code-comment">// set LED value to 0</span>
+int outputValue = 0;
 
+<span id="code-comment">// array of all LEDs</span>
+int leds[] = {B,G,W};
 
-
-<span id="code-comment">// how many times the button has been pressed</span>
-int buttonPressed = 0;
-<span id="code-comment">// state of the LEDs (0 = off, 1 = on)</span>
-int ledState = 0;
-<span id="code-comment">// brightness of the LEDs</span>
-int brightness = 0;
-<span id="code-comment">// points to fade the LEDs by</span>
-int fadeAmount = 1; 
-<span id="code-comment">// array of all LED pin #s</span>
-int LEDs[5] = {G, R, B, ledPin1, ledPin2};
-
-
-<span id="code-comment">//set up the LEDS as outputs and the button as input</span>
+<span id="code-comment">// initialize Blue, Green, and White LEDs as outputs</span>
 void setup() {
-  <span id="code-comment">//use for loop to select each LED pin #</span>
-  for(int i = 0; i < 5; i++) {
-    <span id="code-comment">//initialize each LED pin # as output</span>
-    pinMode(LEDs[i], OUTPUT);
+  <span id="code-comment">// select each LED</span>
+  for (int i=0; i<3; i++) {
+    <span id="code-comment">// set Blue, Green, and White LEDs as outputs</span>
+    pinMode(leds[i], OUTPUT);
   }
-  <span id="code-comment">//initialize the pushbutton pin as input</span>
-  pinMode(buttonPin, INPUT);
+  <span id="code-comment">// starts serial communication</span>
+  Serial.begin(9600);
 }
 
-<span id="code-comment">//loop to check if the button is pressed and when the lights should turn on/off</span>
-void loop (){
-  <span id="code-comment">// check if the pushbutton is pressed AND if the number of time pressed is an even number</span>
-  if ((digitalRead(buttonPin) == HIGH) && (buttonPressed % 2 == 0)) {
-    <span id="code-comment">// debounce time for 400 milliseconds before registering input</span>
-    delay(400);
-    <span id="code-comment">// increase the amount of time the button has been pressed by 1</span>
-    buttonPressed += 1;
-    <span id="code-comment">// change the state of LEDs to 1 (lights on)</span>
-    ledState = 1;
-  }
-
-  <span id="code-comment">// check that as long as the state of LEDs is set to ON:</span>
-  while (ledState == 1) {
-    <span id="code-comment">// use for loop to select each LED pin # except the GREEN led</span>
-    <span id="code-comment">// in the multi-colored LED to make pink color</span>
-    for(int i = 1; i < 5; i++) {
-      <span id="code-comment">// set each LED brightness to the brightness value</span>
-      analogWrite(LEDs[i], brightness);
+<span id="code-comment">//on-going light detection to turn on/off specific LEDs</span>
+<span id="code-comment">//depending on the brightness (dark, bright, very bright, and too bright)</span>
+void loop() {
+  <span id="code-comment">// read values from photoresistor</span>
+  sensorValue = analogRead(A0);
+  <span id="code-comment">// convert values from sensor (0-1023) into values for LEDs (0-255)</span> 
+  outputValue = map(sensorValue, 0, 1023, 0, 255);
+  <span id="code-comment">// check if LED value converted is less than or equal to 80 (dark)</span>
+  if (outputValue <= 80) {
+    <span id="code-comment">// set Blue LED to a specific brightness value</span>
+    analogWrite(B, outputValue);
+    <span id="code-comment">// turn Green LED off</span>
+    digitalWrite(G, LOW);
+    <span id="code-comment">// turn White LED off</span>
+    digitalWrite(W, LOW);
+    <span id="code-comment">// wait 5 seconds to stabilize</span>
+    delay(5);
+    <span id="code-comment">// print message to Serial board</span>
+    Serial.println("It's dark!");
+  <span id="code-comment">// check if LED value converted is between 81 and 160 (bright)</span>
+  } else if ((outputValue >= 81) and (outputValue <= 160)) {
+    <span id="code-comment">// set Green LED to a specific brightness value</span>
+    analogWrite(G, outputValue);
+    <span id="code-comment">// turn Blue LED off</span>
+    digitalWrite(B, LOW);
+    <span id="code-comment">// turn White LED off</span>
+    digitalWrite(W, LOW);
+    <span id="code-comment">// wait 5 seconds to stabilize</span>
+    delay(5);
+    <span id="code-comment">// print message to Serial board</span>
+    Serial.println("It's light!");
+    <span id="code-comment">// check if LED value converted is between 161 and 240 (very bright)</span>
+  } else if ((outputValue >= 161) and (outputValue <= 240)) {
+    <span id="code-comment">// set White LED to a specific brightness value</span>
+    analogWrite(W, outputValue);
+    <span id="code-comment">// turn Blue LED off</span>
+    digitalWrite(B, LOW);
+    <span id="code-comment">// turn Green LED off</span>
+    digitalWrite(G, LOW);
+    <span id="code-comment">// wait 5 seconds to stabilize</span>
+    delay(5);
+    <span id="code-comment">// print message to Serial board</span>
+    Serial.println("It's super bright!");
+    <span id="code-comment">// check if LED value converted is more than 241 (too bright)</span>
+  } else {
+    <span id="code-comment">// select each LED</span>
+    for (int i=0; i<3; i++) {
+      <span id="code-comment">// turn LEDs on</span>
+      digitalWrite(leds[i], HIGH);
     }
-    <span id="code-comment">// change the brightness for next time through the loop</span>
-    <span id="code-comment">// by adding the fadeAmount value</span>
-    brightness = brightness + fadeAmount;
-    <span id="code-comment">// check if the brightness is 0 or less OR if the brightness is 255 or more</span>
-    if (brightness <= 0 || brightness >= 255) {
-      <span id="code-comment">// reverse the direction of the fading with a negative fadeAmount value</span>
-      fadeAmount = -fadeAmount;
-    }   
-    <span id="code-comment">// wait for 3 milliseconds to see the dimming effect</span>
-    delay(3);
-
-    <span id="code-comment">// check if the pushbutton is pressed AND if the number of time pressed is an odd number</span>
-    if ((digitalRead(buttonPin) == HIGH) && (buttonPressed % 2 != 0)) {
-      <span id="code-comment">// debounce time for 400 milliseconds before registering input</span>
-      delay(400);
-      <span id="code-comment">// use for loop to select each LED pin #</span>
-      for(int i = 0; i < 5; i++) {
-        <span id="code-comment">// turn the LED off:</span>
-        digitalWrite(LEDs[i], LOW);
-      }
-      <span id="code-comment">// increase the amount of time the button has been pressed by 1</span>
-      buttonPressed += 1; 
-      <span id="code-comment">// change the state of LEDs to 0 (lights off)</span>
-      ledState = 0;
+    <span id="code-comment">//wait 100 milliseconds for flicker</span>
+    delay(100);
+    <span id="code-comment">// select each LED</span>
+    for (int i=0; i<3; i++) {
+      <span id="code-comment">// turn LEDs off</span>
+      digitalWrite(leds[i], LOW);
     }
+    <span id="code-comment">//wait 100 milliseconds for flicker</span>
+    delay(100);
+    <span id="code-comment">// print message to Serial board</span>
+    Serial.println("It's way too bright!!");
   }
 } </code>
 </pre>
