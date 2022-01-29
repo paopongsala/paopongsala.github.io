@@ -34,7 +34,7 @@
 		<div class="side-by-side">
 			<div id="texts">
 			<h3 id="subheader">SCHEMATIC</h3>
-			<p>This schematic shows 2 blue LEDs, 1 multi-colored LED, and a pushbutton lined up in a parallel circuit. The Arduino is powered by a 5V USB cord where 5 different PWM pins are used to individually connect to the LEDs, plus 1 regular GPIO pin connecting to the button. For the LEDs and the button, resistors with specific values were calculated and selected (see "Calculating Resistors" below) to avoid damaging components on the circuit. All the resistors were then connected to ground.</p> </div>
+			<p>This schematic shows 3 LEDs and a voltage divider (composed of a photoresistor and a 10K Ω resistor in series) lined up in a parallel circuit. The Arduino is powered by a 5V USB cord where 3 different PWM pins are used to individually connect to the LEDs, plus 1 analog input pin connecting between the photoresistor and the 10K Ω resistor. For the LEDs and the photoresistor, resistors with specific values were calculated and selected (see "Calculating Resistors" below). All the resistors/LEDs were then connected to ground.</p> </div>
 			<img src="A3_schematic.png" style="height: auto;margin-left: 1rem;object-fit: contain;width: 50%;min-width: 20rem;">
 		</div>
 		</br>
@@ -46,10 +46,10 @@
   <li><p>1 Arduino Uno R3</p></li>
   <li><p>1 breadboard</p></li>	
   <li><p>1 USB cable and power source (laptop)</p></li>
-  <li><p>8 wires (1 for ground; 5 for LEDs; 2 for button) </p></li>
-  <li><p>3 LEDs (2 blue; 1 multi-colored)</p></li>
-  <li><p>1 pushbutton</p></li>
-  <li><p>6 resistors (3 of 220Ω; 2 of 100Ω; 1 of 10kΩ)</p></li>
+  <li><p>6 wires (1 for ground; 3 for LEDs; 2 for photoresistor) </p></li>
+  <li><p>3 LEDs (1 blue; 1 green, 1 white)</p></li>
+  <li><p>1 photoresistor</p></li>
+  <li><p>4 resistors (1 of 220Ω; 2 of 100Ω; 1 of 10kΩ)</p></li>
 </ul>
 </p> </div>
 			<img src="A3_circuit.png" style="height: auto;margin-left: 1rem;object-fit: contain;width: 50%;min-width: 20rem;"></div>
@@ -60,27 +60,21 @@
 
 	<div id="texts" style="width:80%;">
 		<h3 id="subheader">CALCULATING RESISTORS</h3> </br>
-		<p>For <span style="color: green;font-weight:bold;">Green</span> and <span style="color: red;font-weight:bold;">Red</span> LEDs in the multi-colored LED, — knowing that they have a 1.8 voltage drop and that the USB provides 5V, I calculated the 	
+		<p>For the <span style="color: green;font-weight:bold;">GREEN</span> LED, — knowing that it has a 1.8 voltage drop and that the USB provides 5V, I calculated the 	
 		voltage across the resistor as follows: </p>
-		<p id="formula">V = 5V - 1.8V = 3.2V</p>
-		<p>Using Ohm's Law, I then calculated the value of the resistors to achieve the desired current of 0.02A: </p>
-		<p id="formula">voltage = current * resistance</p> 
-		<p id="formula">3.2V    = 0.02A   * resistance </p> 
-		<p id="formula">resistance = 3.2V / 0.02A = <span style="color: #8a8a8a;">160 Ω</span> </p>
-		<p>Because the class kit provided does not include 160 Ω resistors, I <span style="color: #8a8a8a;font-weight:bold;">opted for a higher value of 220 Ω</span> which resulted in a lesser current but would prevent the LEDs from breaking. </p></br></br>
+		<img src="GRY.png">
+		<p>Because the class kit provided does not include 160 Ω resistors, I <span style="color: #8a8a8a;font-weight:bold;">opted for a higher value of 220 Ω</span> which resulted in a lesser current. </p></br></br>
 
-		<p>Using similar calculation for the <span style="color: #4287f5;font-weight:bold;">Blue</span> LEDs that have a 3.3 voltage drop, the voltage across the resistor would be </p>
-		<p id="formula">V = 5V - 3.3V = 1.7 V </p>
-		<p>Using Ohm's Law, </p>
-		<p id="formula">voltage = current * resistance </p>
-		<p id="formula">1.7V    = 0.02A   * resistance </p>
-		<p id="formula">resistance = 1.7V / 0.02A = <span style="color: #8a8a8a;">85 Ω</span> </p>
-		<p>Again, because the kit does not include 85 Ω resistors, I <span style="color: #8a8a8a;font-weight:bold;">used 100 Ω resistors for the 2 blue LEDs and a 220  Ω resistor for the blue LED in the multi-colored LED</span> for consistency, which didn't produce a noticeable difference in effect since any resistors with the value above 85 Ω should be fine.</p></br></br>
+		<p>Using similar calculation for the <span style="color: #4287f5;font-weight:bold;">BLUE</span> and <span style="color: #ffffff;font-weight:bold;"> WHITE</span> LEDs that have a 3.3 voltage drop, the voltage across the resistor would be </p>
+		<img src="BW.png">
+		<p>Again, because the kit does not include 85 Ω resistors, I <span style="color: #8a8a8a;font-weight:bold;">used 100 Ω resistors</span> instead.</p></br></br>
 
-		<p>For the <span style="color: #ffffff;font-weight:bold;">button</span>, I <span style="color: #8a8a8a;font-weight:bold;">used a 10k Ω resistor</span> because  the 10k value limits the current to a lot less than the max current. For the button to work, we just need a nominal amount of current to flow, and the lower that amount is, the less power we will use.</p>
+		<p>For the <span style="color: #a13b47;font-weight:bold;">PHOTORESISTOR</span>, I measured the varying resistances of my photoresistor under various light conditions I have determined for each brightness level (Dark, Bright, Very Bright, and Too Bright) and used the voltage divider formula to calculate the value of my fixed resistor. Because I wanted the output voltage to be 2.5V when the brightness is "BRIGHT" and I measured that the photoresistor had about 10K Ω under that light condition, <span style="color: #8a8a8a;font-weight:bold;"> I decided to use a 10K Ω fixed resistor. </span> Also, the 10k Ω resistor has been used as a standard value to save power and would serve as a safety net when the photoresistor's resistance gets really close to 0 Ω (under really bright light). </br></br> Additionally, I was curious to see how the voltage was changing under each light condition, so I did some calculations below. </p> <img src="A3_photoresistor.png">
 
-	</p>
+
+
 	</div>
+
 
 <div>
 <h3 id="subheader">CODE SNIPPET</h3>
@@ -114,8 +108,10 @@ void setup() {
   Serial.begin(9600);
 }
 
-<span id="code-comment">//on-going light detection to turn on/off specific LEDs</span>
-<span id="code-comment">//depending on the brightness (dark, bright, very bright, and too bright)</span>
+<span id="code-comment">/*on-going light detection to turn on/off specific LEDs</span>
+<span id="code-comment">depending on the brightness (dark, bright, very bright, and too bright)</span>
+<span id="code-comment">NOTE: value ranges for each light level were arbitrarily chosen</span>
+<span id="code-comment">based on the room environment I was in */</span>
 void loop() {
   <span id="code-comment">// read values from photoresistor</span>
   sensorValue = analogRead(A0);
