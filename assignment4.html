@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html> 
 <html> 
 
@@ -19,7 +21,232 @@
 	<a id="back" href="index.html">← Back</a>
         <div class="header">
                 <h1 id="header">A4: Libraries!</h1>
+		<p style="margin-top:0px;"> Smiley's and Frowny's Adventure Through Space</p>
+		<img src="A4.gif" width=70%></a>
         </div>
+
+	
+	
+	</br>
+
+
+
+		<div class="side-by-side">
+			<div id="texts">
+			<h3 id="subheader">SCHEMATIC</h3>
+			<p>This schematic shows a 16x2 LCD and a joystick connected to an Arduino that is powered by a 5V USB cable via a breadboard. The LCD is connected to the Arduino via 6 GPIO pins, to ground, and power with an additional use of a 220Ω resistor and a 10k potentiometer as suggested by the <a href="https://docs.arduino.cc/learn/electronics/lcd-displays" target="_blank" style="color:white">Arduino LCD reference library</a>. The joystick is connected to the Arduino Analog In pins, to power, and ground. I also created a capacitive sensor using a 1M Ω resistor to measure absolute touch as documented by the <a href="https://playground.arduino.cc/Main/CapacitiveSensor/" target="_blank" style="color:white"> Capacitive Sensing reference library </a> which is connected to the Arduino GPIO pins on each side.</p> </div>
+			<img src="A4_schematic.png" style="height: auto;margin-left: 1rem;object-fit: contain;width: 50%;min-width: 20rem;">
+		</div>
+		</br>
+		<div class="side-by-side">
+			<div id="texts">
+			<h3 id="subheader">CIRCUIT</h3>
+			<p>Following the schematic outlined above, I built the circuit using the following components: </p>
+<ul>
+  <li><p>1 Arduino Uno R3</p></li>
+  <li><p>1 breadboard</p></li>	
+  <li><p>1 USB cable and power source (laptop)</p></li>
+  <li><p>22 wires </p></li>
+  <li><p>1 16x2 LCD</p></li>
+  <li><p>1 10k potentiometer</p></li>
+  <li><p>1 joystick</p></li>
+  <li><p>2 resistors (1 of 1M Ω; 1 of 220Ω)</p></li>
+</ul> </div>
+			<img src="A4_circuit.png" style="height: auto;margin-left: 1rem;object-fit: contain;width: 50%;min-width: 20rem;"></div>
+
+
+
+<div>
+<h3 id="subheader">CODE SNIPPET</h3>
+<pre>
+<code> <span id="code-comment">/* This program allows users to select a character of choice
+and move them around an LCD with a joystick */</span>
+
+<span id="code-comment">// Using LCD library</span>
+#include &lt;LiquidCrystal.h&gt;
+<span id="code-comment">// Using Capacitive Sensor library</span>
+#include &lt;CapacitiveSensor.h&gt;
+
+<span id="code-comment">//naming and setting capacitive sensor to GPIO pins on Arduino</span>
+CapacitiveSensor   cs_9_8 = CapacitiveSensor(9,8);  
+<span id="code-comment">//setting LCD to GPIO pins on Arduino</span>
+LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
+
+<span id="code-comment">//set default center x position on joystick (1024/2)</span>
+int xcenter = 512;
+<span id="code-comment">//set default center y position on joystick (1024/2)</span>
+int ycenter = 512;
+<span id="code-comment">//name Analog IN pin for joystick x position reading</span>
+int x = A0;  
+<span id="code-comment">//name Analog IN pin for joystick y position reading</span>
+int y = A1;
+<span id="code-comment">//current x position of joystick</span>
+int xval = 0;
+<span id="code-comment">//current y position of joystick</span>
+int yval = 0;
+<span id="code-comment">//column cursor appears on</span>
+int col = 0;
+<span id="code-comment">//row cursor appears on</span>
+int row = 0;
+<span id="code-comment">//times the capacitive sensor has been tapped</span>
+int timesTapped = 0;
+<span id="code-comment">//character that is being typed</span>
+int currentChar = 1;
+
+<span id="code-comment">//drawing a custom smiley face (0 = no fill, 1 = fill)</span>
+<span id="code-comment">//example code from Arduino Liquid Crystal library https://tinyurl.com/y8k8jerm</span>
+byte smiley[8] = {
+  B00000,     <span id="code-comment">//row 1</span>
+  B10001,     <span id="code-comment">//row 2</span>
+  B00000,     <span id="code-comment">//row 3</span>
+  B00000,     <span id="code-comment">//row 4</span>
+  B10001,     <span id="code-comment">//row 5</span>
+  B01110,     <span id="code-comment">//row 6</span>
+  B00000,     <span id="code-comment">//row 7</span>
+};
+
+<span id="code-comment">//drawing a custom frowny face (0 = no fill, 1 = fill)</span>
+byte frowny[8] = {
+  B00000,     <span id="code-comment">//row 1</span>
+  B10001,     <span id="code-comment">//row 2</span>
+  B00000,     <span id="code-comment">//row 3</span>
+  B00000,     <span id="code-comment">//row 4</span>
+  B01110,     <span id="code-comment">//row 5</span>
+  B10001,     <span id="code-comment">//row 6</span>
+  B00000,     <span id="code-comment">//row 7</span>
+};
+
+<span id="code-comment">//calibrating the joystick position and setting up LCD interface</span>
+void setup() {
+  <span id="code-comment">// during the first 3 seconds</span>
+  while (millis() < 3000) {
+    <span id="code-comment">// change the x position value to what the arduino reads</span>
+    xcenter = analogRead(x);
+    <span id="code-comment">// change the y position value to what the arduino reads</span>
+    ycenter = analogRead(x);
+  }
+  <span id="code-comment">//assigning smiley character to #1</span>
+  lcd.createChar(1, smiley);
+  <span id="code-comment">//assigning frowny character to #2</span>
+  lcd.createChar(2, frowny);
+  <span id="code-comment">//initialize 16 col x 2 rows LCD</span>
+  lcd.begin(16, 2);  
+  <span id="code-comment">//position typing cursor on top left of LCD</span>
+  lcd.setCursor(0, 0);
+  <span id="code-comment">// write the current character to LCD</span>
+  lcd.write(byte(currentChar));
+}
+
+<span id="code-comment">//constantly checking joystick postition and move the character around LCD</span>
+<span id="code-comment">//and reset board and change characters when capacitive sensor is touched</span>
+void loop() {
+  <span id="code-comment">// read current joystick x position</span>
+  xval = analogRead(x);
+  <span id="code-comment">// read current joystick y position</span>
+  yval = analogRead(y);
+  <span id="code-comment">// wait .2 sec to stabilize</span>
+  delay(200);
+  <span id="code-comment">// if current joystick x position is more than its center position + 5 </span>
+  <span id="code-comment">// (arbitrary small # in case of unexpected position fluctuation) and the</span>
+  <span id="code-comment">// current column is before the rightmost column</span>
+  if ((xval > xcenter+5) && (col < 15)) {
+    <span id="code-comment">// move the current column to the right</span>
+    col = col + 1;
+    <span id="code-comment">// set typing cursor to new column (within 0 - 15) and current row</span>
+    lcd.setCursor(constrain(col, 0, 15), row);
+    <span id="code-comment">// write current character to the new column and row</span>
+    lcd.write(byte(currentChar));
+    <span id="code-comment">// set typing cursor to previous column (within 0 - 15) and current row</span>
+    lcd.setCursor(constrain(col-1, 0, 15), row);
+    <span id="code-comment">// delete the previous character</span>
+    lcd.print(" ");
+  }
+  <span id="code-comment">// if current joystick x position is less than its center position - 5 </span>
+  <span id="code-comment">// (arbitrary small # in case of unexpected position fluctuation) and the</span>
+  <span id="code-comment">// current column is after the leftmost column</span>
+  else if ((xval < xcenter-5) && (col > 0)) {
+    <span id="code-comment">// move the current column to the left</span>
+    col = col - 1;
+    <span id="code-comment">// set typing cursor to new column (within 0 - 15) and current row</span>
+    lcd.setCursor(constrain(col, 0, 15), row);
+    <span id="code-comment">// write current character to the new position</span>
+    lcd.write(byte(currentChar));
+    <span id="code-comment">// set typing cursor to previous column (within 0 - 15) and current row</span>
+    lcd.setCursor(constrain(col+1, 0, 15), row);
+    <span id="code-comment">// delete the previous character</span>
+    lcd.print(" ");
+ } 
+  <span id="code-comment">// if current joystick y position is less than its center position - 10 </span>
+  <span id="code-comment">// (arbitrary # in case of unexpected position fluctuation) and the</span>
+  <span id="code-comment">// current row is the bottom row</span>
+ else if (((yval < ycenter-10) && (row == 1))) {
+    <span id="code-comment">// move the current row up</span>
+    row = row - 1;
+    <span id="code-comment">// set typing cursor to current column and new row (between 0 and 1) </span>
+    lcd.setCursor(col, constrain(row, 0, 1));
+    <span id="code-comment">// write current character to the new position</span>
+    lcd.write(byte(currentChar));
+    <span id="code-comment">// set typing cursor to current column and previous row (between 0 and 1) </span>
+    lcd.setCursor(col, constrain(row+1, 0,1));
+    <span id="code-comment">// delete the previous character</span>
+    lcd.print(" ");
+ }
+  <span id="code-comment">// if current joystick y position is more than its center position + 10 </span>
+  <span id="code-comment">// (arbitrary # in case of unexpected position fluctuation) and the</span>
+  <span id="code-comment">// current row is the top row</span>
+  else if (((yval > ycenter+10) && (row == 0))) {
+    <span id="code-comment">// move the current row down</span>
+    row = row + 1;
+    <span id="code-comment">// set typing cursor to current column and new row (between 0 and 1) </span>
+    lcd.setCursor(col, constrain(row, 0, 1));
+    <span id="code-comment">// write current character to the new position</span>
+    lcd.write(byte(currentChar));
+    <span id="code-comment">// set typing cursor to current column and previous row (between 0 and 1) </span>
+    lcd.setCursor(col, constrain(row-1, 0,1));
+    <span id="code-comment">// delete the previous character</span>
+    lcd.print(" ");
+  }
+
+  <span id="code-comment">// time since powered on</span>
+  long start = millis();
+  <span id="code-comment">// set sensor arbitrary resolution to 30</span>
+  long total1 =  cs_9_8.capacitiveSensor(30);
+  <span id="code-comment">// if sensor out put is more than arbitrary number </span>
+  <span id="code-comment">// determined to be the "touched" state</span>
+  if (total1 > 600) {
+    <span id="code-comment">// increase the # of times the sensor has been tapped by 1</span>
+    timesTapped += 1;
+    <span id="code-comment">// clear LCD interface</span>
+    lcd.clear();
+    <span id="code-comment">// reset column to 0</span>
+    col = 0;
+    <span id="code-comment">// reset row to 0</span>
+    row = 0;
+    <span id="code-comment">// if the number of times tapped is even</span>
+    if (timesTapped % 2 == 0) {
+      <span id="code-comment">// set character to be 1 (smiley)</span>
+      currentChar = 1;
+      <span id="code-comment">// write current character to LCD</span>
+      lcd.write(byte(currentChar));
+    } 
+    <span id="code-comment">// if the number of times tapped is odd</span>
+    else if (timesTapped % 2 != 0) {
+      <span id="code-comment">// set character to be 2 (frowny)</span>
+      currentChar = 2;
+      <span id="code-comment">// write current character to LCD</span>
+      lcd.write(byte(currentChar));
+    }
+  } 
+}</code>
+</pre>
+</div>
+
+
+
+
     </body>
 
 </html>
+
+
+
