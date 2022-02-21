@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html> 
 <html> 
 
@@ -5,7 +7,7 @@
         <meta charset="utf-8"> 
         <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
 
-        <title>A5: High(er) Voltage and Transistors!</title>
+        <title>A5: High(er) Voltage & Transistors!</title>
         <link rel='shortcut icon' type='image/x-icon' href="/favicon.ico"/>
 
  
@@ -18,8 +20,161 @@
     <body> 
 	<a id="back" href="index.html">← Back</a>
         <div class="header">
-                <h1 id="header">A5: High(er) Voltage and Transistors!</h1>
+                <h1 id="header">High(er) Voltage & Transistors!</h1>
+		<p style="margin-top:0px;"> Adjusting LED strip's brightness incrementally using a keypad</p>
+		<img src="A5.gif" width=70%></a>
         </div>
+
+	
+	
+	</br>
+
+
+
+		<div class="side-by-side">
+			<div id="texts">
+			<h3 id="subheader">SCHEMATIC</h3>
+			<p>This schematic shows a 4x4 keypad connected to an Arduino via 8 different GPIO pins. Powered by a 12V external power supply, the LED strip is connected to a transistor that is connected to a PWM pin and ground. The USB also provides the Arduino with 5V which is used for logical operations.</p> </div>
+			<img src="A5_schematic.png" style="height: auto;margin-left: 1rem;object-fit: contain;width: 50%;min-width: 20rem;">
+		</div>
+		</br>
+		<div class="side-by-side">
+			<div id="texts">
+			<h3 id="subheader">CIRCUIT</h3>
+			<p>Following the schematic outlined above, I built the circuit using the following components: </p>
+<ul>
+  <li><p>1 Arduino Uno R3</p></li>
+  <li><p>1 breadboard</p></li>	
+  <li><p>1 USB cable and power source (laptop)</p></li>
+  <li><p>14 wires </p></li>
+  <li><p>1 N-MOSFET transistor</p></li>
+  <li><p>1 4x4 Keypad</p></li>
+  <li><p>2 alligator clips</p></li>
+  <li><p>1 power supply</p></li>
+  <li><p>1 LED strip</p></li>
+</ul> </div>
+			<img src="A5_circuit.png" style="height: auto;margin-left: 1rem;object-fit: contain;width: 50%;min-width: 20rem;"></div>
+
+
+<div id="texts" style="width:85%;">
+<h3 id="subheader">CALCULATIONS</h3> </br>
+<p><span style="color: #a13b47;font-weight:bold;">Voltage and current through transistor:</span></br>
+White LEDs have a 3.3 voltage drop</br>
+Each segment in the strip has 3 LEDs, so 3.3 V * 3 = 9.9 V drop</br>
+Power supply gives 12V, so 12 - 9.9 = 2.1v across resistor</br>
+Resistor is marked 181, so 18x10 = 180 ohms</br>
+2.1 V / 180 ohms = 0.01167A, 11.67mA per segment</br>
+Since each segment lines up in a parallel circuit, current is additive.</br>
+With 100 segments total, the total current that will travel though the transistor is 0.01167 A * 100 = <span style="color: #a13b47;font-weight:bold;">1.167 A</span></br>
+which is less than the max current the transistor can handle (32A).</br>
+
+With 2.1 V leftover in each segment, the transistor will also receive <span style="color: #a13b47;font-weight:bold;">2.1 V</span> since voltage is equal </br>
+in a parallel circuit. 2.1 V is also a lot less than the transistor's max voltage handling of 60 V</br>
+</p>
+</div>
+
+
+
+<div>
+<h3 id="subheader">CODE SNIPPET</h3>
+<pre>
+<code><span id="code-comment">/* This program adjusts an LED strip's brightness according to the number
+pressed on a keypad.*/</span>
+
+
+<span id="code-comment">//using keypad library</span>
+#include &lt;Keypad.h&gt;
+
+<span id="code-comment">//set LED pin</span>
+int led = 10;
+
+<span id="code-comment">//setting up keypad. Code snippet from:</span>
+<span id="code-comment">//https://www.circuitbasics.com/how-to-set-up-a-keypad-on-an-arduino/</span>
+<span id="code-comment">//number of keypad rows</span>
+const byte ROWS = 4; 
+<span id="code-comment">//number of keypad columns</span>
+const byte COLS = 4; 
+
+<span id="code-comment">// setting characters for the 4x4 keypad</span>
+char hexaKeys[ROWS][COLS] = {
+  {'1', '2', '3', 'A'},  <span id="code-comment">//row 1 characters</span>
+  {'4', '5', '6', 'B'},  <span id="code-comment">//row 2 characters</span>
+  {'7', '8', '9', 'C'},  <span id="code-comment">//row 3 characters</span>
+  {'*', '0', '#', 'D'}   <span id="code-comment">//row 4 characters</span>
+};
+
+<span id="code-comment">//set each row to their respective pinout</span>
+byte rowPins[ROWS] = {9, 8, 7, 6};
+<span id="code-comment">//set each column to their respective pinout</span>
+byte colPins[COLS] = {5, 4, 3, 2}; 
+
+<span id="code-comment">//initializes the internal keymap to be equal to previously defined 4x4 keypad</span>
+Keypad customKeypad = Keypad(makeKeymap(hexaKeys), rowPins, colPins, ROWS, COLS); 
+
+<span id="code-comment">//set up initial state of the LED strip</span>
+void setup(){
+  <span id="code-comment">//set LED pin as output</span>
+  pinMode(led, OUTPUT);
+  <span id="code-comment">//set LED pin to OFF</span>
+  digitalWrite(led, LOW);
+}
+
+<span id="code-comment">//checking which key is pressed on the key pad and changing the brightness</span>
+<span id="code-comment">//of the LED strip according to the # pressed (higher # = brighter LED)</span>
+void loop(){
+  <span id="code-comment">//character that is pressed</span>
+  char customKey = customKeypad.getKey();
+    <span id="code-comment">//if #1 is pressed on the keypad</span>
+    if (customKey == '1'){
+      <span id="code-comment">//set arbitrary brightness of LED to 28</span>
+      analogWrite(led, 28);
+    <span id="code-comment">//if #2 is pressed on the keypad</span>
+    } else if (customKey == '2') {
+      <span id="code-comment">//set arbitrary brightness of LED to 56</span>
+      analogWrite(led, 56);
+    <span id="code-comment">//if #3 is pressed on the keypad</span>
+    } else if (customKey == '3') {
+      <span id="code-comment">//set arbitrary brightness of LED to 84</span>
+      analogWrite(led, 84);
+    <span id="code-comment">//if #4 is pressed on the keypad</span>
+    } else if (customKey == '4') {
+      <span id="code-comment">//set arbitrary brightness of LED to 112</span>
+      analogWrite(led, 112);
+    <span id="code-comment">//if #5 is pressed on the keypad</span>
+    } else if (customKey == '5') {
+      <span id="code-comment">//set arbitrary brightness of LED to 140</span>
+      analogWrite(led, 140);
+    <span id="code-comment">//if #6 is pressed on the keypad</span>
+    } else if (customKey == '6') {
+      <span id="code-comment">//set arbitrary brightness of LED to 168</span>
+      analogWrite(led, 168);
+    <span id="code-comment">//if #7 is pressed on the keypad</span>
+    } else if (customKey == '7') {
+      <span id="code-comment">//set arbitrary brightness of LED to 196</span>
+      analogWrite(led, 196);
+    <span id="code-comment">//if #8 is pressed on the keypad</span>
+    } else if (customKey == '8') {
+      <span id="code-comment">//set arbitrary brightness of LED to 224</span>
+      analogWrite(led, 224);
+    <span id="code-comment">//if #9 is pressed on the keypad</span>
+    } else if (customKey == '9') {
+      <span id="code-comment">//set LEDs all the way on</span>
+      analogWrite(led, 255);
+    <span id="code-comment">//if #0 is pressed on the keypad</span>
+    } else if (customKey == '0') {
+      <span id="code-comment">//turn LEDs off</span>
+      digitalWrite(led, LOW);
+    } 
+}</code>
+</pre>
+</div>
+
+
+
+
     </body>
 
 </html>
+
+
+
