@@ -58,18 +58,16 @@
 
 <div id="texts" style="width:85%;">
 <h3 id="subheader">CALCULATIONS</h3> </br>
-<p><span style="color: #a13b47;font-weight:bold;">Voltage and current through transistor:</span></br>
+<p>
 White LEDs have a 3.3 voltage drop</br>
 Each segment in the strip has 3 LEDs, so 3.3 V * 3 = 9.9 V drop</br>
-Power supply gives 12V, so 12 - 9.9 = 2.1v across resistor</br>
+Power supply gives 12V, so 12 - 9.9 = <span style="color: #a13b47;font-weight:bold;">2.1v</span> </br>
 Resistor is marked 181, so 18x10 = 180 ohms</br>
-2.1 V / 180 ohms = 0.01167A, 11.67mA per segment</br>
+2.1 V / 180 ohms = <span style="color: #a13b47;font-weight:bold;">0.01167A, 11.67mA per segment</span></br>
 Since each segment lines up in a parallel circuit, current is additive.</br>
 With 100 segments total, the total current that will travel though the transistor is 0.01167 A * 100 = <span style="color: #a13b47;font-weight:bold;">1.167 A</span></br>
 which is less than the max current the transistor can handle (32A).</br>
-
-With 2.1 V leftover in each segment, the transistor will also receive <span style="color: #a13b47;font-weight:bold;">2.1 V</span> since voltage is equal </br>
-in a parallel circuit. 2.1 V is also a lot less than the transistor's max voltage handling of 60 V</br>
+</br>
 </p>
 </div>
 
