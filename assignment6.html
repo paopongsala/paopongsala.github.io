@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html> 
 <html> 
 
@@ -18,8 +20,308 @@
     <body> 
 	<a id="back" href="index.html">← Back</a>
         <div class="header">
-                <h1 id="header">A6: Talking to the Web!</h1>
+                <h1 id="header">Talking to the Web!</h1>
+		<p style="margin-top:0px;"> Activating 3D cubes and LEDs with touch & keyboard</p>
+		<img src="A6.gif" width=70%></a>
         </div>
+
+	
+	
+	</br>
+
+
+
+		<div class="side-by-side">
+			<div id="texts">
+			<h3 id="subheader">SCHEMATIC</h3>
+			<p>This schematic shows 2 red LEDs and 2 capacitive sensors connected to the Arduino powered by 5V from a USB cable. Each LED is connected to a 220 Ω resistor (see Calculations below), then to ground. Each capacitive sensor uses a 1M Ω resistor to measure absolute touch as documented by the <a href="https://playground.arduino.cc/Main/CapacitiveSensor/" target="_blank" style="color:white"> Capacitive Sensing reference library </a> which is connected to the Arduino pins on each side.</p></p> </div>
+			<img src="A6_schematic.png" style="height: auto;margin-left: 1rem;object-fit: contain;width: 50%;min-width: 20rem;">
+		</div>
+		</br>
+		<div class="side-by-side">
+			<div id="texts">
+			<h3 id="subheader">CIRCUIT</h3>
+			<p>Following the schematic outlined above, I built the circuit using the following components: </p>
+<ul>
+  <li><p>1 Arduino Uno R3</p></li>
+  <li><p>1 breadboard</p></li>	
+  <li><p>1 USB cable and power source (laptop)</p></li>
+  <li><p>7 wires </p></li>
+  <li><p>2 red LEDs</p></li>
+  <li><p>4 resistors (2 of 220 Ω; 2 of 1M Ω)</p></li>
+</ul> </div>
+			<img src="A6_circuit.png" style="height: auto;margin-left: 1rem;object-fit: contain;width: 50%;min-width: 20rem;"></div>
+
+
+<div id="texts" style="width:85%;">
+<h3 id="subheader">CALCULATIONS</h3> </br>
+<p>For the 2 <span style="color: red;font-weight:bold;">Red</span> LEDs — knowing that they have a 1.8 voltage drop and that the USB provides 5V, I calculated the 	
+		voltage across the resistor as follows: </p>
+		<p id="formula">V = 5V - 1.8V = 3.2V</p>
+		<p>Using Ohm's Law, I then calculated the value of the resistors to achieve the desired current of 0.02A: </p>
+		<p id="formula">voltage = current * resistance</p> 
+		<p id="formula">3.2V    = 0.02A   * resistance </p> 
+		<p id="formula">resistance = 3.2V / 0.02A = <span style="color: #8a8a8a;">160 Ω</span> </p>
+		<p>Because the class kit provided does not include 160 Ω resistors, I <span style="color: #8a8a8a;font-weight:bold;">opted for a higher value of 220 Ω</span> which resulted in a lesser current. </p></br></br>
+
+</br>
+</p>
+</div>
+
+
+
+<div>
+<h3 id="subheader">ARDUINO CODE</h3>
+<pre>
+<code>/* This firmware is used in combination with p5.js
+to create a 2-way interaction between the arduino
+and the webpage. The 3D cubes on the webpage can be activated
+via the capacitive sensors and/or the keyboard. 
+The LEDs can also be activated in the same manner*/
+
+
+//using the capacitive sensor library
+#include &lt;CapacitiveSensor.h&gt;
+
+//naming and setting capacitive sensor to Arduino pins #2 & 4
+CapacitiveSensor   cs_2_4 = CapacitiveSensor(2,4);  
+//naming and setting capacitive sensor to Arduino pins #5 & 7
+CapacitiveSensor   cs_5_7 = CapacitiveSensor(5,7); 
+
+//setup serial logistics and LED pins
+void setup() {
+  // initialize serial communications
+  Serial.begin(9600);  
+  // set the 3 ms timeout for parseInt
+  Serial.setTimeout(3); 
+  // set pin #3 to OUTPUT
+  pinMode(3, OUTPUT);
+  // set pin #6 to OUTPUT
+  pinMode(6, OUTPUT);
+}
+
+//constantly communicating via serial and turning LEDs on/off
+void loop() {
+ // if there's serial data 
+ if (Serial.available() > 0) {
+  // read it 
+  int inByte = Serial.read(); 
+  //if keycode received is 49 (#1 on keyboard)
+  if (inByte == 49) {
+    //turn 1st red LED on
+    digitalWrite(3, HIGH);
+  }
+  //if keycode received is 50 (#2 on keyboard)
+  if (inByte == 50) {
+    //turn 2nd red LED on
+    digitalWrite(6, HIGH);
+  }
+ }
+
+ // set 1st sensor arbitrary resolution to 30
+ long total0 =  cs_2_4.capacitiveSensor(30);
+  // if sensor value is more than arbitrary number 
+  // determined to be the "touched" state
+ if (total0 > 1000) {
+  //begin sending first part of array. 
+  //0 indicates the 1st cube that will be activated
+  Serial.print("[0,");
+  //send value of the 1st sensor
+  Serial.print(total0);
+  //ending the array
+  Serial.println("]");
+  //turn 1st LED on
+  digitalWrite(3, HIGH);
+ // if sensor values <= 1000
+ } else {
+    //turn 1st LED off
+    digitalWrite(3, LOW);
+ }
+
+ // set 2nd sensor arbitrary resolution to 30
+ long total1 =  cs_5_7.capacitiveSensor(30);
+ // if sensor value is more than arbitrary number 
+ // determined to be the "touched" state
+ if (total1 > 1000) {
+    //begin sending first part of array 
+    //1 indicates the 2nd cube that will be activated
+    Serial.print("[1,");
+    //send value of the 2nd sensor
+    Serial.print(total1);
+    //closing the array
+    Serial.println("]");
+    //turn 2nd LED on
+    digitalWrite(6, HIGH);
+ // if sensor values <= 1000
+ } else {
+    //turn 2nd LED off
+    digitalWrite(6, LOW);
+ }
+}</code></pre> </div>
+
+
+
+<div>
+<h3 id="subheader">SKETCH.JS CODE</h3>
+<pre>
+<code>
+var serial;       // variable to hold an instance of the serialport library
+var portName = '/dev/tty.usbmodem14101'     //name of port
+let boxes = [];       //array of cubes to be created
+let y = 0;      //y position of cubes
+var dataarray = [,];      //array of incoming data from ardunio
+
+
+function setup() {                    //sets up serial logistics
+  serial = new p5.SerialPort();       // make a new instance of the serialport library
+  serial.on('list', printList);       // set a callback function for the serialport list event
+  serial.on('connected', serverConnected); // callback for connecting to the server
+  serial.on('open', portOpen);        // callback for the port opening
+  serial.on('data', serialEvent);     // callback for when new data arrives
+  serial.on('error', serialError);    // callback for errors
+  serial.on('close', portClose);      // callback for the port closing
+
+  serial.list();                      // list the serial ports
+  serial.open(portName);              // open a serial port
+
+  createCanvas(windowWidth, windowHeight, WEBGL);       //3D canvas that fits screen
+  let x = -200;                       //arbitrary starting X position of left most cube on page
+  for(let i = 0; i < 2; i++) {        //wants 2 cubes
+    boxes.push(new Box(x, y))         //call Box Class and makes cubes
+    x += windowWidth/3;               //distance between cubes
+  }
+}
+
+function draw() {                               //draw on page
+  background(255);                              //background color RGB
+  ambientLight(255);                            //ambient light color RGB
+  ambientMaterial(133, 98, 209);                //cube color RGB
+  for(let i = 0; i < boxes.length; i++) {       //loops through all cubes created
+   boxes[i].spin();                             //sets rotation
+    boxes[i].show();                            //makes cubes appear
+  }
+  if (keyIsDown(49)) {                          //#1 is pressed on keyboard
+      boxes[0].play();                          //animate cube #1
+      serial.write(49);                         //send keycode to Serial monitor
+    }
+  if (keyIsDown(50)) {                          //#2 is pressed on keyboard
+      boxes[1].play();                          //animate cube #2
+      serial.write(50);                         //send keycode to Serial monitor
+  }
+}
+
+function printList(portList) {                  // get the list of ports:
+ for (var i = 0; i < portList.length; i++) {    // portList is an array of serial port names
+   print(i + " " + portList[i]);                // Display the list the console
+ }
+}
+
+function serverConnected() {                     //check server connnection
+  print('connected to server.');                 //print success message
+}
+
+function portOpen() {                            //check if serial port is open
+  print('the serial port opened.')               //print status message
+}
+
+function serialError(err) {                     //check if sanything's wrong with serial comm
+  print('Something went wrong with the serial port. ' + err);      //print error message
+}
+
+function portClose() {                          //check if serial port is closed
+  print('The serial port closed.');             //print status message
+}
+
+
+
+
+function serialEvent() {                        //using serial to animate cubes
+  if (serial.available()) {                     //if there's serial data
+  	var datastring = serial.readLine();         // read in some serial
+  	var newarray;                               //create new array for serial data
+  	try {                                       //test if possible
+    	  newarray = JSON.parse(datastring);      // can we parse the serial
+    	} catch(err) {                            //if there's error, ignore
+  	}
+	if (typeof(newarray) == 'object') {          //if parsed array is object
+  	  dataarray = newarray;                    //set dataarray to newarray
+	}
+    if (dataarray[0] == 0) {                   //if fist index of array is 0
+      boxes[0].play();                         //animate cube #1
+      dataarray = [,];                         //resets array to prevent any repetition
+  }
+  if (dataarray[0] == 1) {                     //if fist index of array is 1
+    boxes[1].play();                           //animate cube #2
+    dataarray = [,];                           //resets array to prevent any repetition
+  }
+ }
+}
+
+</code></pre> </div>
+
+<div>
+<h3 id="subheader">BOX.JS CODE</h3>
+<pre>
+<code>//this class and animation code borrowed from https://editor.p5js.org/mrbombmusic/sketches/1dAWOwawY
+
+class Box {                 //new class for cubes
+  constructor(x, y) {       //using 2 constructors
+    this.x = x;             //x position on the page
+    this.y = y;             //y position on the page
+    this.angle = 0;         //angle of cube
+    this.size = 150;        //initial size of cube
+    this.grow = 0;          //growth size
+  }
+
+  show() {                          //appearance on page
+    push();                         //save current visual state
+    translate(this.x, this.y);      //translate cube
+    rotateX(this.angle);            //rotate in x direction
+    rotateY(this.angle);            //rotate in y direction
+    box(this.size + this.grow);     //increase cube size incrementally
+    pop();                          //restore visual state
+  }
+
+  spin() {                          //rotation of cube
+   if(this.grow > 0) {              //if size is bigger than 0
+    this.grow -= 2;                 //decreasing size incrementally
+    this.angle -= 0.1;              //decreasing angle incrementally
+   }
+  }
+
+  play() {                          //trigger animation
+   this.grow = 60;                  //makes cube bigger
+   this.angle = 50;                //changes appearance angle
+  }
+}</code></pre></div>
+
+
+<div>
+<h3 id="subheader">INDEX.HTML CODE</h3>
+<pre>
+<code>&lt;!DOCTYPE html&gt;
+&lt;html lang=""&gt;
+  &lt;head&gt;
+    &lt;meta charset="utf-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;p5.js example&lt;/title&gt;
+    &lt;style&gt; body {padding: 0; margin: 0; overflow: hidden;} &lt;/style&gt;
+    &lt;script src="../p5.min.js"&gt;&lt;/script&gt;
+    &lt;script src="../addons/p5.dom.min.js"&gt;&lt;/script&gt;
+    &lt;script src="../addons/p5.sound.min.js"&gt;&lt;/script&gt;
+    &lt;script src="../addons/p5.sound.js"&gt;&lt;/script&gt;
+    &lt;script src="../addons/p5.serialport.js"&gt;&lt;/script&gt;
+    &lt;script src="sketch.js"&gt;&lt;/script&gt;
+    &lt;script src="box.js"&gt;&lt;/script&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre> </div>
+
+<p>*Interactivity of 3D cubes and animation adapted from this <a href="https://editor.p5js.org/mrbombmusic/sketches/1dAWOwawY" target="_blank" style="color:white">box.js file</a></p>
     </body>
 
 </html>
+
+
+
