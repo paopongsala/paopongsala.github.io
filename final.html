@@ -1,0 +1,433 @@
+
+
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
+
+        <title>Final Project: Mini Keyboard!</title>
+        <link rel='shortcut icon' type='image/x-icon' href="/favicon.ico"/>
+
+
+
+        <link href="style.css" media="screen" rel="stylesheet" type="text/css" />
+
+    </head>
+
+
+    <body>
+	<a id="back" href="index.html">← Back</a>
+        <div class="header">
+                <h1 id="header">Final Project: Mini Keyboard!</h1>
+		<p style="margin-top:0px;"> Touch piano with computer sound and animation</p>
+		<img src="A6.gif" width=70%></a>
+        </div>
+
+
+
+	</br>
+
+
+  <div id="texts" style="width:85%;">
+  <h3 id="subheader">PROJECT DESCRIPTION</h3> </br>
+  <p>In this project, I created a mini Keyboard consisted of 7 musical keys (C4 - B4)
+    that replicates the arrangement and sound of a real life piano through the use of
+    capacitive sensors as inputs. As a non-standalone device, the Keyboard
+    needs to be connected to a laptop which funcions as a power source and an audio
+    output. The setup process involves this Keyboard-laptop connection and key calibration via touch
+    that triggers automatically once the Keyboard receives power (see demo video). Finally, tapping each key
+    will play a sound linked to that keynote and also trigger an animation of 3D cubes that
+    are arranged in the same way as the Keyboard on a p5.js local webpage.
+    Keys can be played individually or at the same time as other keys.</p>
+  </br>
+  </p>
+  </div>
+		<div class="side-by-side">
+			<div id="texts">
+			<h3 id="subheader">SCHEMATIC</h3>
+			<p>This schematic shows a USB-powered Arduino, 7 capacitive sensors, and 1 Blue LED.
+        Each capacitive sensor uses a 1M Ω resistor to measure absolute touch as documented by the <a href="https://playground.arduino.cc/Main/CapacitiveSensor/" target="_blank" style="color:white">
+        Capacitive Sensing reference library </a> which is connected to the Arduino pins on each side. The receiving pin
+        for each capacitive sensor pair is connected to a rectangular foil shaped like a piano key via alligator wire clips.
+         The Blue LED used to signal calibration is connected to a 100 Ω resistor (5V - 3.3V drop = 1.7V. Using Ohm's Law, resistance
+         = 1.7V / 0.02A desired current = 85 Ω. Using any resistor larger than 85 Ω would work to keep the current low,
+         but higher resistances will cause the LED to be dimmer. For this project, I chose 100 Ω) and then to ground. *Note: Since I didn't have enough
+       GPIO pins for all of my capacitive sensors, I had to use 4 extra analog input pins as GPIOs (documented as a possible use on the <a href="https://www.arduino.cc/en/Tutorial/Foundations/AnalogInputPins" target="_blank" style="color:white">Arduino site</a>)  </p></p> </div>
+			<img src="final_schematic.png" style="height: auto;margin-left: 1rem;object-fit: contain;width: 50%;min-width: 20rem;">
+		</div>
+		</br>
+		<div class="side-by-side">
+			<div id="texts">
+			<h3 id="subheader">CIRCUIT</h3>
+			<p>Following the schematic outlined above, I built the circuit using the following components: </p>
+<ul>
+  <li><p>1 Arduino Uno R3</p></li>
+  <li><p>1 breadboard</p></li>
+  <li><p>1 USB cable and power source (laptop)</p></li>
+  <li><p>17 wires; 7 alligator clips </p></li>
+  <li><p>1 blue LED</p></li>
+  <li><p>8 resistors (7 of 1M Ω; 1 of 100 Ω)</p></li>
+  <li><p>Aluminum foil</p></li>
+</ul> </div>
+			<img src="final_circuit.png" style="height: auto;margin-left: 1rem;object-fit: contain;width: 50%;min-width: 20rem;"></div>
+
+
+
+<div class="side-by-side">
+  <div id="texts">
+  <h3 id="subheader">ADDITIONAL RESOURCES</h3>
+  <p>Files/material needed for the project:</p>
+  <ul>
+  <li><p>p5.js Complete Library</p></li>
+  <li><p>Sound files for each key note</p></li>
+  <li><p>p5.serialcontrol</p></li>
+  <li><p>Ability to run a local server</p></li>
+  <li><p>(Optional) Filament for 3D printing enclosure</p></li>
+  </ul></div>
+  <img src="final_enclosure.png" style="height: auto;margin-left: 1rem;object-fit: contain;width: 50%;min-width: 20rem;">
+</div>
+
+
+<h3 id="subheader">CODE</h3>
+<div class="tab">
+  <button class="tablinks" onclick="openCity(event, 'ARDUINO')" id="defaultOpen">ARDUINO</button>
+  <button class="tablinks" onclick="openCity(event, 'SKTECH.JS')">SKETCH.JS</button>
+  <button class="tablinks" onclick="openCity(event, 'BOX.JS')">BOX.JS</button>
+  <button class="tablinks" onclick="openCity(event, 'INDEX.HTML')">INDEX.HTML</button>
+</div>
+
+<div id="ARDUINO" class="tabcontent">
+  <pre>
+  <code>/*this firmware is used with p5.js to run an interactive
+  touch piano program with capacitive touch sensors.*/
+
+  //using the capacitive sensor library
+  #include &lt;CapacitiveSensor.h&gt;
+
+  //array of whether sensor value is sent to serial port for each key
+  int sent[7] = {false,false,false,false,false,false,false};
+  //array of sensor values
+  int val[7] = {0,0,0,0,0,0,0};
+  //array of sensor values when keys are 'touched'
+  int touch[7] = {600,600,600,600,600,600,600};
+  //array of sensor values when keys are not 'touched'
+  int nontouch[7] = {10,10,10,10,10,10,10};
+  //array of sensor values during calibration
+  int sensorVal[7] =  {0,0,0,0,0,0,0};
+
+  //initialize capacitive sensor to pins 2&3
+  CapacitiveSensor   cs0 = CapacitiveSensor(2,3);
+  //initialize capacitive sensor to pins 4&5
+  CapacitiveSensor   cs1 = CapacitiveSensor(4,5);
+  //initialize capacitive sensor to pins 6&7
+  CapacitiveSensor   cs2 = CapacitiveSensor(6,7);
+  //initialize capacitive sensor to pins 8&9
+  CapacitiveSensor   cs3 = CapacitiveSensor(8,9);
+  //initialize capacitive sensor to pins 10&11
+  CapacitiveSensor   cs4 = CapacitiveSensor(10,11);
+  //initialize capacitive sensor to pins A3&A2
+  CapacitiveSensor   cs5 = CapacitiveSensor(A3,A2);
+  //initialize capacitive sensor to pins A1&A0
+  CapacitiveSensor   cs6 = CapacitiveSensor(A1,A0);
+
+  //array of all capacitive sensors
+  CapacitiveSensor sensors[7] = {cs0,cs1,cs2,cs3,cs4,cs5,cs6};
+
+  //setup serial logistics and sensor calibration
+  void setup() {
+    // initialize serial communications
+    Serial.begin(9600);
+    //set blue LED as output
+    pinMode(13, OUTPUT);
+    // calibrate during the first 10 seconds
+    while (millis() < 10000) {
+      //turn blue LED on
+      digitalWrite(13, HIGH);
+      //loop through all 7 keys
+      for(int i = 0; i < 7; i++) {
+        //collect sensor value for each key
+        sensorVal[i] = sensors[i].capacitiveSensor(30);
+        // record the maximum sensor value
+        if (sensorVal[i] > touch[i]) {
+          //set as new 'touch' value
+          touch[i] = sensorVal[i];
+        }
+        // record the minimum sensor value
+        if (sensorVal[i] < nontouch[i]) {
+          //set as new 'nontouch' value
+          nontouch[i] = sensorVal[i];
+        }
+     }
+   }
+    // turn of LED at the end of calibration
+    digitalWrite(13, LOW);
+  }
+
+
+  //constantly communicating via serial and p5.js
+  void loop() {
+    //loop through each of the 7 keys
+    for(int i = 0; i < 7; i++) {
+     //record sensor value
+     val[i] = sensors[i].capacitiveSensor(30);
+     //if value gotten is more than calibrated 'touch' value - 200
+     //(for potential variations) and it hasn't been sent to serial monitor
+     if ((val[i] > touch[i]-200) && (sent[i] == false)) {
+       //print to start array
+       Serial.print("[");
+       //print the key number
+       Serial.print(i);
+       //print , to separate values
+       Serial.print(",");
+       //print sensor value gotten
+       Serial.print(val[i]);
+       //print to close array
+       Serial.println("]");
+       //wait 25 ms to process data
+       delay(25);
+       //record that value has been sent
+       sent[i] = true;
+     // if sensor value gotten is less than calibrated 'nontouch' value - 100
+     // (for potential variations) AND value has been sent
+     } else if ((val[i] < nontouch[i]+100) && (sent[i] == true)) {
+       //set the sent state to false
+       sent[i] = false;
+     }
+    }
+  }</code></pre>
+</div>
+
+<div id="SKETCH.JS" class="tabcontent">
+  <pre>
+  <code>
+    var serial;       // variable to hold an instance of the serialport library
+    var portName = '/dev/tty.usbmodem14101'     //name of port
+    let boxes = [];       //array of cubes to be created
+    let y = 0;      //y position of cubes
+    var dataarray = [,];      //array of incoming data from ardunio
+    let notes = ['C4.wav','D4.wav', 'E4.wav', 'F4.wav','G4.wav','A4.wav','B4.wav']; //sound files for each note
+    let keyNotes = []; //array for each key note
+    let played = [false,false,false,false,false,false,false]; //array of whether a key has been played
+
+
+    function preload() {                          //load all sound files to be ready to use
+      soundFormats('wav');                        //sound file format
+      for(let i = 0; i < notes.length; i++) {     //loop through all sound files
+        keyNotes.push(loadSound(notes[i]));       //push loaded sound file to each keynote
+      }
+    }
+
+
+    function setup() {                    //sets up serial logistics
+      serial = new p5.SerialPort();       // make a new instance of the serialport library
+      serial.on('list', printList);       // set a callback function for the serialport list event
+      serial.on('connected', serverConnected); // callback for connecting to the server
+      serial.on('open', portOpen);        // callback for the port opening
+      serial.on('data', serialEvent);     // callback for when new data arrives
+      serial.on('error', serialError);    // callback for errors
+      serial.on('close', portClose);      // callback for the port closing
+
+      serial.list();                      // list the serial ports
+      serial.open(portName);              // open a serial port
+
+
+      createCanvas(windowWidth, windowHeight, WEBGL);       //3D canvas that fits screen
+      let x = -450;                       //arbitrary starting X position of left most cube on page
+      for(let i = 0; i < 7; i++) {        //wants 7 cubes
+        boxes.push(new Box(x, y))         //call Box Class and makes cubes
+        x += windowWidth/8;               //distance between cubes
+      }
+    }
+
+    function draw() {                               //draw on page
+      background(255);                              //background color RGB
+      ambientLight(255);                            //ambient light color RGB
+      ambientMaterial(252, 3, 69);                //cube color RGB
+      for(let i = 0; i < boxes.length; i++) {       //loops through all cubes created
+       boxes[i].spin();                             //sets rotation
+        boxes[i].show();                            //makes cubes appear
+      }
+    }
+
+
+
+
+
+    function printList(portList) {                  // get the list of ports:
+     for (var i = 0; i < portList.length; i++) {    // portList is an array of serial port names
+       print(i + " " + portList[i]);                // Display the list the console
+     }
+    }
+
+    function serverConnected() {                     //check server connnection
+      print('connected to server.');                 //print success message
+    }
+
+    function portOpen() {                            //check if serial port is open
+      print('the serial port opened.')               //print status message
+    }
+
+    function serialError(err) {                     //check if sanything's wrong with serial comm
+      print('Something went wrong with the serial port. ' + err);      //print error message
+    }
+
+    function portClose() {                          //check if serial port is closed
+      print('The serial port closed.');             //print status message
+    }
+
+
+
+    function serialEvent() {                        //using serial to animate cubes
+      if (serial.available()) {                     //if there's serial data
+      	var datastring = serial.readLine();         // read in some serial
+      	var newarray;                               //create new array for serial data
+      	try {                                       //test if possible
+        	  newarray = JSON.parse(datastring);      // can we parse the serial
+        	} catch(err) {                            //if there's error, ignore
+      	}
+    	if (typeof(newarray) == 'object') {           //if parsed array is object
+      	  dataarray = newarray;                     //set dataarray to newarray
+    	}
+
+     for(let i = 0; i < notes.length; i++) {                //loop through each key
+       if((dataarray[0] == i) && (played[i] == false)) {    //if array received matches they key # and hasn't been played
+         keyNotes[i].play();                                //play sound of that key
+         boxes[i].play();                                   //trigger box animation for that key
+         played[i] = true;                                  //record that note has been played
+         dataarray = [,];                                   //clear data array to avoid any repeated data
+       } else if ((played[i] == true) && (serial.available() == false)) {   //if no data is received and key has already played
+         played[i] = false;                                 //set play state to false
+       }
+      }
+     }
+    }
+
+
+  </code></pre>
+</div>
+
+<div id="BOX.JS" class="tabcontent">
+  <pre>
+  <code>//this class and animation code borrowed from https://editor.p5js.org/mrbombmusic/sketches/1dAWOwawY
+
+  class Box {                 //new class for cubes
+    constructor(x, y) {       //using 2 constructors
+      this.x = x;             //x position on the page
+      this.y = y;             //y position on the page
+      this.angle = 0;         //angle of cube
+      this.size = 150;        //initial size of cube
+      this.grow = 0;          //growth size
+    }
+
+    show() {                          //appearance on page
+      push();                         //save current visual state
+      translate(this.x, this.y);      //translate cube
+      rotateX(this.angle);            //rotate in x direction
+      rotateY(this.angle);            //rotate in y direction
+      box(this.size + this.grow);     //increase cube size incrementally
+      pop();                          //restore visual state
+    }
+
+    spin() {                          //rotation of cube
+     if(this.grow > 0) {              //if size is bigger than 0
+      this.grow -= 2;                 //decreasing size incrementally
+      this.angle -= 0.1;              //decreasing angle incrementally
+     }
+    }
+
+    play() {                          //trigger animation
+     this.grow = 60;                  //makes cube bigger
+     this.angle = 50;                //changes appearance angle
+    }
+  }</code></pre>
+</div>
+
+<div id="INDEX.HTML" class="tabcontent">
+  <pre>
+  <code>&lt;!DOCTYPE html&gt;
+  &lt;html lang=""&gt;
+    &lt;head&gt;
+      &lt;meta charset="utf-8"&gt;
+      &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+      &lt;title&gt;p5.js example&lt;/title&gt;
+      &lt;style&gt; body {padding: 0; margin: 0; overflow: hidden;} &lt;/style&gt;
+      &lt;script src="../p5.min.js"&gt;&lt;/script&gt;
+      &lt;script src="../addons/p5.dom.min.js"&gt;&lt;/script&gt;
+      &lt;script src="../addons/p5.sound.min.js"&gt;&lt;/script&gt;
+      &lt;script src="../addons/p5.sound.js"&gt;&lt;/script&gt;
+
+      &lt;script src="../addons/p5.serialport.js"&gt;&lt;/script&gt;
+      &lt;script src="sketch.js"&gt;&lt;/script&gt;
+      &lt;script src="box.js"&gt;&lt;/script&gt;
+
+    &lt;/head&gt;
+    &lt;body&gt;
+    &lt;/body&gt;
+  &lt;/html&gt;
+  </code></pre>
+</div>
+
+<script>
+function openCity(evt, cityName) {
+  var i, tabcontent, tablinks;
+  tabcontent = document.getElementsByClassName("tabcontent");
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+  tablinks = document.getElementsByClassName("tablinks");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" active", "");
+  }
+  document.getElementById(cityName).style.display = "block";
+  evt.currentTarget.className += " active";
+}
+
+// Get the element with id="defaultOpen" and click on it
+document.getElementById("defaultOpen").click();
+</script>
+
+
+
+
+<div id="texts" style="width:85%;">
+<h3 id="subheader">HOW IT WORKS</h3> </br>
+<p>After making the circuit, writing the code, and connecting the USB cable from the Arduino
+to the laptop,  </p>
+<ol>
+  <li><p>Go to p5.serialcontrol application, select the Arduino port, and click 'enable'.
+  This step starts the Serial communication between the Arduino and p5.js which transfers
+  information about which key on the Keyboard was pressed and how hard it was pressed.</p></li>
+  <li><p>Once the serial communication starts and the Keyboard receives 5V power from the
+    laptop, the Blue LED attached to the circuit lights up for 10 seconds to start calibrating
+  the values for each key since sensor values can vary in different environments and before
+  each use. During these 10 seconds, the user needs to tap each key individually and the
+  arduino will record high values gotten from each sensor as the 'touched' state.
+  This 'touched' value will be used to determine if a key has been tapped or not in
+  future sensor readings. After 10 seconds, the blue LED will turn off to signify
+  the end of the calibration period.</p></li>
+  <li><p>Run the sketch.js, box.js, index.html, including applicable sound files and p5 addons,
+  on a local server. This step opens up a webpage where cube animations and key sounds will
+  come through. With the serial communication running and the webpage open, when a user
+  taps on a key, the arduino checks if the capacitive touch value received from the sensor is
+  within a range determined to be the 'touched' state from the calibration. If yes, the Arduino
+  will send that touch value and the key that was pressed to the serial port as an array. p5.js
+  will then reads in this array and tells the sound and the cube that was mapped to the key
+  that was pressed to play on the webpage. Multiple keys can also be pressed at the same time.
+  </p></li>
+  <li><p>The user can continue to play on the Keyboard as long as they want if the laptop connnection
+  is secure and still providing sufficient power. Once the user is done with the interaction, they
+  can simply unplug the USB cable.</p></li>
+  <li><p>If the user wishes to play the keyboard again in the future, go back to step 1 and repeat.</p></li>
+</ol>
+
+</br>
+</p>
+</div>
+
+
+
+
+
+</html>
